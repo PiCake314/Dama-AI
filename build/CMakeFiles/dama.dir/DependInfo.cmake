@@ -8,6 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/Users/alialmutawa/Downloads/Coding/C/Dama/Game.cpp" "CMakeFiles/dama.dir/Game.cpp.o" "gcc" "CMakeFiles/dama.dir/Game.cpp.o.d"
+  "/Users/alialmutawa/Downloads/Coding/C/Dama/ZobristHash.cpp" "CMakeFiles/dama.dir/ZobristHash.cpp.o" "gcc" "CMakeFiles/dama.dir/ZobristHash.cpp.o.d"
   "/Users/alialmutawa/Downloads/Coding/C/Dama/dama.cpp" "CMakeFiles/dama.dir/dama.cpp.o" "gcc" "CMakeFiles/dama.dir/dama.cpp.o.d"
   )
 

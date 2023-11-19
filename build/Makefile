@@ -129,6 +129,54 @@ dama/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/dama.dir/build.make CMakeFiles/dama.dir/build
 .PHONY : dama/fast
 
+Game.o: Game.cpp.o
+.PHONY : Game.o
+
+# target to build an object file
+Game.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dama.dir/build.make CMakeFiles/dama.dir/Game.cpp.o
+.PHONY : Game.cpp.o
+
+Game.i: Game.cpp.i
+.PHONY : Game.i
+
+# target to preprocess a source file
+Game.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dama.dir/build.make CMakeFiles/dama.dir/Game.cpp.i
+.PHONY : Game.cpp.i
+
+Game.s: Game.cpp.s
+.PHONY : Game.s
+
+# target to generate assembly for a file
+Game.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dama.dir/build.make CMakeFiles/dama.dir/Game.cpp.s
+.PHONY : Game.cpp.s
+
+ZobristHash.o: ZobristHash.cpp.o
+.PHONY : ZobristHash.o
+
+# target to build an object file
+ZobristHash.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dama.dir/build.make CMakeFiles/dama.dir/ZobristHash.cpp.o
+.PHONY : ZobristHash.cpp.o
+
+ZobristHash.i: ZobristHash.cpp.i
+.PHONY : ZobristHash.i
+
+# target to preprocess a source file
+ZobristHash.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dama.dir/build.make CMakeFiles/dama.dir/ZobristHash.cpp.i
+.PHONY : ZobristHash.cpp.i
+
+ZobristHash.s: ZobristHash.cpp.s
+.PHONY : ZobristHash.s
+
+# target to generate assembly for a file
+ZobristHash.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dama.dir/build.make CMakeFiles/dama.dir/ZobristHash.cpp.s
+.PHONY : ZobristHash.cpp.s
+
 dama.o: dama.cpp.o
 .PHONY : dama.o
 
@@ -162,6 +210,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... dama"
+	@echo "... Game.o"
+	@echo "... Game.i"
+	@echo "... Game.s"
+	@echo "... ZobristHash.o"
+	@echo "... ZobristHash.i"
+	@echo "... ZobristHash.s"
 	@echo "... dama.o"
 	@echo "... dama.i"
 	@echo "... dama.s"

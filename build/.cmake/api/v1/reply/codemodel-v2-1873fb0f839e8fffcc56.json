@@ -6,7 +6,7 @@
 			[
 				{
 					"build" : ".",
-					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"jsonFile" : "directory-.-f5ebdc15457944623624.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.5"
@@ -19,7 +19,7 @@
 					]
 				}
 			],
-			"name" : "Debug",
+			"name" : "",
 			"projects" : 
 			[
 				{
@@ -39,7 +39,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "dama::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-dama-Debug-dac79a776a659c84be2d.json",
+					"jsonFile" : "target-dama-56ee81cd8960d7189271.json",
 					"name" : "dama",
 					"projectIndex" : 0
 				}

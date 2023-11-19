@@ -1,4 +1,8 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/dama.dir/Game.cpp.o"
+  "CMakeFiles/dama.dir/Game.cpp.o.d"
+  "CMakeFiles/dama.dir/ZobristHash.cpp.o"
+  "CMakeFiles/dama.dir/ZobristHash.cpp.o.d"
   "CMakeFiles/dama.dir/dama.cpp.o"
   "CMakeFiles/dama.dir/dama.cpp.o.d"
   "dama"
