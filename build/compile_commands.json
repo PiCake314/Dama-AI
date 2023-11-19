@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/Users/alialmutawa/Downloads/Coding/C/Dama/build",
+  "command": "/usr/bin/clang++ -g -std=gnu++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk -o CMakeFiles/dama.dir/dama.cpp.o -c /Users/alialmutawa/Downloads/Coding/C/Dama/dama.cpp",
+  "file": "/Users/alialmutawa/Downloads/Coding/C/Dama/dama.cpp",
+  "output": "CMakeFiles/dama.dir/dama.cpp.o"
+}
+]

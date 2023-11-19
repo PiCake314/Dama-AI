@@ -1,0 +1,3 @@
+/Users/alialmutawa/Downloads/Coding/C/Dama/build/CMakeFiles/dama.dir
+/Users/alialmutawa/Downloads/Coding/C/Dama/build/CMakeFiles/edit_cache.dir
+/Users/alialmutawa/Downloads/Coding/C/Dama/build/CMakeFiles/rebuild_cache.dir
