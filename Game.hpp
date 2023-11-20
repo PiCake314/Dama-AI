@@ -542,7 +542,10 @@ struct Game{
 
     int alphaBeta(int depth = 10, int alpha = -INF, int beta = INF){
 
-        // if(cache.contains(zobristHash.hash(board))) return cache.get(zobristHash.hash(board));
+        if(depth == 10 && cache.contains(zobristHash.hash(board))){
+            auto c = cache.get(zobristHash.hash(board));
+            return c.turn == turn ? c.score : -c.score;
+        }
 
         if(depth == 0) return evaluate();
 
@@ -561,7 +564,7 @@ struct Game{
             if(score > alpha) alpha = score;
         }
 
-        cache.insert(zobristHash.hash(board), alpha);
+        cache.insert(zobristHash.hash(board), alpha, turn);
 
         return alpha;
     }

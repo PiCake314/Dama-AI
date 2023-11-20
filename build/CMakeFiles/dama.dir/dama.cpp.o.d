@@ -781,6 +781,5 @@ CMakeFiles/dama.dir/dama.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__random/weibull_distribution.h \
   /Users/alialmutawa/Downloads/Coding/C/Dama/Piece.hpp \
   /Users/alialmutawa/Downloads/Coding/C/Dama/ZobristHash.hpp \
-  /Users/alialmutawa/Downloads/Coding/C/Dama/Game.hpp \
-  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/thread \
-  /Users/alialmutawa/Downloads/Coding/C/Dama/FixedSizeHashTable.hpp
+  /Users/alialmutawa/Downloads/Coding/C/Dama/FixedSizeHashTable.hpp \
+  /Users/alialmutawa/Downloads/Coding/C/Dama/Game.hpp

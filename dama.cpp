@@ -21,7 +21,7 @@ int main(){
 
     // endgame: 7Y/8/1B6/8/1B6/8/1B6/7Y
 
-    Game b{"7Y/8/1b6/1b6/8/8/1b6/7Y"};
+    Game b{};
     b.turn = Piece::Color::Black;
 
     b.print();
@@ -35,20 +35,20 @@ int main(){
         std::cout << "Black pieces: " << b.numBlack << ", " << b.numShaikhBlack << " of which are shaikhs\n";
         std::cout << "Yellow pieces: " << b.numYellow << ", " << b.numShaikhYellow << " of which are shaikhs\n";
 
-        if(b.turn == Piece::Color::Black){
+        if(b.turn == Piece::Color::Yellow){
 
-            std::clog << moves.size() << " moves:\n";
-            for(const auto& m : moves){
-                for(int i = 0; i < m.positions.size() - 1; ++i){
-                        std::cout << m.positions[i].x << ' ' << m.positions[i].y << " -> ";
-                }
-                std::cout << m.positions.back().x << ' ' << m.positions.back().y << '\n';
+            // std::clog << moves.size() << " moves:\n";
+            // for(const auto& m : moves){
+            //     for(int i = 0; i < m.positions.size() - 1; ++i){
+            //             std::cout << m.positions[i].x << ' ' << m.positions[i].y << " -> ";
+            //     }
+            //     std::cout << m.positions.back().x << ' ' << m.positions.back().y << '\n';
 
-                std::puts("Eats:");
-                for(const auto& e : m.eaten){
-                    std::cout << e.position.x << ' ' << e.position.y << '\n';
-                }
-            }
+            //     std::puts("Eats:");
+            //     for(const auto& e : m.eaten){
+            //         std::cout << e.position.x << ' ' << e.position.y << '\n';
+            //     }
+            // }
 
             int best = -INF;
             Move bestMove = moves.front();
@@ -56,7 +56,7 @@ int main(){
             if(moves.size() != 1)
             for(const auto& m : moves){
                 bool promotion = b.makeMove(m);
-                int score = -b.alphaBeta(7);
+                int score = -b.alphaBeta(6);
                 b.unmakeMove(m, promotion);
 
                 if(score >= best){ // using >= instead of > to avoid the first move being the same every time
@@ -76,7 +76,9 @@ int main(){
         else{
 
             std::clog << moves.size() << " moves:\n";
+            int jj = 0;
             for(const auto& m : moves){
+                std::cout << '[' << jj++ << "]: ";
                 for(int i = 0; i < m.positions.size() - 1; ++i){
                         std::cout << m.positions[i].x << ' ' << m.positions[i].y << " -> ";
                 }
@@ -87,29 +89,34 @@ int main(){
                     std::cout << e.position.x << ' ' << e.position.y << '\n';
                 }
             }
+            jj = 0;
 
-            int best = -INF;
-            Move bestMove = moves.front();
+            // int best = -INF;
+            // Move bestMove = moves.front();
             
-            if(moves.size() != 1)
-            for(const auto& m : moves){
-                bool promotion = b.makeMove(m);
-                int score = -b.alphaBeta(4);
-                b.unmakeMove(m, promotion);
+            // if(moves.size() != 1)
+            // for(const auto& m : moves){
+            //     bool promotion = b.makeMove(m);
+            //     int score = -b.alphaBeta(4);
+            //     b.unmakeMove(m, promotion);
 
-                if(score > best){
-                    best = score;
-                    bestMove = m;
-                }
-            }
+            //     if(score > best){
+            //         best = score;
+            //         bestMove = m;
+            //     }
+            // }
 
-            std::cout << "Yellow's best: " << best << '\n';
-            for(int i = 0; i < bestMove.positions.size() - 1; ++i){
-                std::cout << bestMove.positions[i].x << ' ' << bestMove.positions[i].y << " -> ";
-            }
-            std::cout << bestMove.positions.back().x << ' ' << bestMove.positions.back().y << '\n';
+            // std::cout << "Yellow's best: " << best << '\n';
+            // for(int i = 0; i < bestMove.positions.size() - 1; ++i){
+            //     std::cout << bestMove.positions[i].x << ' ' << bestMove.positions[i].y << " -> ";
+            // }
+            // std::cout << bestMove.positions.back().x << ' ' << bestMove.positions.back().y << '\n';
 
-            b.play(bestMove);
+            int index = std::rand() % moves.size();
+            std::clog << "Plating move: " << index << '\n';
+            Move best_move = moves.at(index);
+
+            b.play(best_move);
         }
 
 
@@ -117,7 +124,7 @@ int main(){
         // b.play(moves[0]);
         b.print();
         std::cout << b.cache.size() << " entries in the cache out of " << b.cache.capacity() << '\n';
-        std::getchar();
+        // std::getchar();
 
     }
 

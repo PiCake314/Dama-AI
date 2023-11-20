@@ -10,22 +10,38 @@
 #include <random>
 #include <unordered_map>
 
+#include "Piece.hpp"
 
 class FixedSizeCache{
-    std::unordered_map<uint64_t, int> table;
+    struct Hashed{
+        int score;
+        Piece::Color turn;
+    };
+
+    std::unordered_map<uint64_t, Hashed> table;
     std::vector<uint64_t> keys;
     const size_t maxSize;
     
 public:
     FixedSizeCache(size_t maxSize) : maxSize{maxSize} {}
 
-    void insert(uint64_t key, int value){
+    void insert(uint64_t key, int value, Piece::Color turn){
         if(table.size() == maxSize){
             table.erase(keys.front());
             keys.erase(keys.begin());
         }
 
-        table[key] = value;
+        if(table.contains(key)){
+            table[key] = {value, turn};
+
+            auto it = std::find(keys.begin(), keys.end(), key);
+            keys.erase(it);
+            keys.push_back(key);
+
+            return;
+        }
+
+        table[key] = {value, turn};
         keys.push_back(key);
     }
 
@@ -33,8 +49,8 @@ public:
         return table.contains(key);
     }
 
-    int get(uint64_t key){
-        return table[key];
+    Hashed get(uint64_t key){
+        return table.at(key);
     }
 
     size_t size(){
