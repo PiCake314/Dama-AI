@@ -529,7 +529,7 @@ struct Game{
                 guess += (10 * e.value() - board[m.positions[0].y][m.positions[0].x].value());
             }
 
-            if(m.promotion && !board[m.positions[0].y][m.positions[0].x].shaikh) guess += 100;
+            // if(m.promotion && !board[m.positions[0].y][m.positions[0].x].shaikh) guess += 100;
 
             m.guess = guess;
         }
