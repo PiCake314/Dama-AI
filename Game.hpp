@@ -10,6 +10,7 @@
 #include <limits>
 #include <random>
 #include <unordered_map>
+#include <fstream>
 
 #include "Piece.hpp"
 #include "ZobristHash.hpp"
@@ -17,11 +18,12 @@
 
 
 struct Game{
-    constexpr static std::string_view startingFen = "8/yyyyyyyy/yyyyyyyy/8/8/bbbbbbbb/bbbbbbbb/8";
+    constexpr inline static std::string_view startingFen = "8/yyyyyyyy/yyyyyyyy/8/8/bbbbbbbb/bbbbbbbb/8";
     Piece::Color turn = Piece::Color::Black;
-    std::array<std::array<Piece, width>, height> board;
+    std::array<std::array<Piece, BOARD_WIDTH>, BOARD_HEIGHT> board;
     FixedSizeCache cache{1'000'000};
     ZobristHash zobristHash;
+    std::ofstream log{"log.txt"};
 
     int numYellow{}, numShaikhYellow{};
     int numBlack{}, numShaikhBlack{};
@@ -128,7 +130,7 @@ struct Game{
             for(int i = 1;
                 board[p2.position.y + (i*dir)][p2.position.x].color == Piece::Color::None
                 && (p2.position.y + (i*dir)) >= 0
-                && (p2.position.y + (i*dir)) < height
+                && (p2.position.y + (i*dir)) < BOARD_HEIGHT
                 ; ++i){
                 positions.push_back(Position{p2.position.x, p2.position.y + (i * dir)});
             }
@@ -156,7 +158,7 @@ struct Game{
             for(int i = 1;
                 board[p2.position.y][p2.position.x + (i*dir)].color == Piece::Color::None // taken from the other if
                 && (p2.position.x + (i*dir)) >= 0
-                && (p2.position.x + (i*dir)) < width;
+                && (p2.position.x + (i*dir)) < BOARD_WIDTH;
                 ++i){
                 positions.push_back(Position{p2.position.x + (i*dir), p2.position.y});
             }
@@ -257,7 +259,7 @@ struct Game{
                     moves.push_back(Move{p.position, {x, y}});
                 }
                 else if(board[y][x].color != p.color){
-                    if(x2 < 0 || x2 >= width || y2 < 0 || y2 >= height) continue;;
+                    if(x2 < 0 || x2 >= BOARD_WIDTH || y2 < 0 || y2 >= BOARD_HEIGHT) continue;;
                     if(board[y2][x2].color != Piece::Color::None) continue;;
 
                     auto positions = canEatShaikh(p, board[y][x]);
@@ -399,8 +401,6 @@ struct Game{
     }
 
      bool makeMove(const Move& move){
-        // make the move and return the eaten pieces
-        // std::vector<Piece> eaten;
         bool promotion = false;
 
         Piece p = board[move.positions[0].y][move.positions[0].x];
@@ -437,7 +437,7 @@ struct Game{
 
     void unmakeMove(const Move& move, bool promotion){
         Piece p = board[move.positions.back().y][move.positions.back().x];
-        board[move.positions.back().y][move.positions.back().x] = Piece::nullPiece;
+        board[p.position.y][p.position.x] = Piece::nullPiece;
 
         for(const auto& e : move.eaten){
             board[e.position.y][e.position.x] = e;
@@ -489,12 +489,12 @@ struct Game{
         }
         else{
             auto respectivePawnBias = color == Piece::Color::Black ? // avoiding double check
-            [](const Piece& p){ return height - p.position.y +1; } : [](const Piece& p){ return p.position.y +1; };
+            [](const Piece& p){ return BOARD_HEIGHT - p.position.y +1; } : [](const Piece& p){ return p.position.y +1; };
 
             auto respectiveUpperHalf = color == Piece::Color::Black ? // avoiding double check
             [](const Piece& p){ return p.position.y < 4; } : [](const Piece& p){ return p.position.y > 3; };
 
-            const int respective_shaikh_bias = height + 2; // not a function since it doesn't depend on the piece
+            const int respective_shaikh_bias = BOARD_HEIGHT + 2; // not a function since it doesn't depend on the piece
 
             for(const auto& row : board){
                 for(const auto& p : row){
@@ -540,11 +540,13 @@ struct Game{
         });
     }
 
-    int alphaBeta(int depth = 10, int alpha = -INF, int beta = INF){
+    std::vector<Move> best_moves;
+    int alphaBeta(int depth = 10, int height = 0, int alpha = -INF, int beta = INF){
+        uint64_t hash = zobristHash.hash(board, turn);
 
-        if(depth == 10 && cache.contains(zobristHash.hash(board))){
-            auto c = cache.get(zobristHash.hash(board));
-            return c.turn == turn ? c.score : -c.score;
+        if(depth == 0 && cache.contains(hash)){
+            auto c = cache.get(hash);
+            return c.score;
         }
 
         if(depth == 0) return evaluate();
@@ -557,14 +559,14 @@ struct Game{
 
         for(const auto& m : moves){
             bool promotion = makeMove(m);
-            int score = -alphaBeta(depth -1, -beta, -alpha);
+            int score = -alphaBeta(depth -1, height +1, -beta, -alpha);
             unmakeMove(m, promotion);
 
             if(score >= beta) return beta;
             if(score > alpha) alpha = score;
         }
 
-        cache.insert(zobristHash.hash(board), alpha, turn);
+        cache.insert(hash, alpha, turn);
 
         return alpha;
     }
@@ -611,23 +613,26 @@ struct Game{
             std::cout << '\n';
         }
     }
-};
 
-
-
-auto precomputeData(){
-    std::array<std::array<std::array<int, 4>, width>, height> data{};
-
-    for(int i = 0; i < 8; ++i){
-        for(int j = 0; j < 8; ++j){
-            int num_north = i;
-            int num_east = width - j - 1;
-            int num_south = height - i - 1;
-            int num_west = j;
-
-            data[i][j] = {num_north, num_east, num_south, num_west};
+    void printLog(){
+        for(int i = 0; i < 8; ++i){
+            for(int j = 0; j < 8; ++j){
+                switch(board[i][j].color){
+                    case Piece::Color::None:
+                        log << '-';
+                        break;
+                    case Piece::Color::Yellow:
+                        if(board[i][j].shaikh) log << 'Y';
+                        else log << 'y';
+                        break;
+                    case Piece::Color::Black:
+                        if(board[i][j].shaikh) log << 'B';
+                        else log << 'b';
+                        break;
+                }
+            }
+            log << '\n';
         }
     }
+};
 
-    return data;
-}

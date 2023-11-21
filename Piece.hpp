@@ -10,8 +10,8 @@
 #include <random>
 #include <unordered_map>
 
-#define width 8
-#define height 8
+#define BOARD_WIDTH 8
+#define BOARD_HEIGHT 8
 
 #define north 0
 #define east 1
@@ -26,7 +26,22 @@
 #define SHAIKH_VALUE 100
 
 constexpr std::array<int, 4> directions{north, east, south, west};
-std::array<std::array<std::array<int, 4>, width>, height> data{};
+auto data = []{
+    std::array<std::array<std::array<int, 4>, BOARD_WIDTH>, BOARD_HEIGHT> data{};
+
+    for(int i = 0; i < 8; ++i){
+        for(int j = 0; j < 8; ++j){
+            int num_north = i;
+            int num_east = BOARD_WIDTH - j - 1;
+            int num_south = BOARD_HEIGHT - i - 1;
+            int num_west = j;
+
+            data[i][j] = {num_north, num_east, num_south, num_west};
+        }
+    }
+
+    return data;
+}();
 
 #define INF 100000
 #define NEG_INF -INF
