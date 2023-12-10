@@ -82,31 +82,30 @@ struct Move{
     std::vector<Position> positions;
     std::vector<Piece> eaten;
     bool eat;
-    bool promotion;
 
     int guess{};
 
     Move(Position from, Position to, bool eats = false)
-    : positions{from, to}, eat{eats}, promotion{to.y == 0 || to.y == 7} {}
+    : positions{from, to}, eat{eats} {}
 
     Move(std::vector<Position> positions, bool eats = false)
-    : positions{positions}, eat{eats}, promotion{!positions.empty() && (positions.back().y == 0 || positions.back().y == 7)} {}
+    : positions{positions}, eat{eats} {}
 
-    bool operator==(const Move& other) const{
-        if(positions.size() != other.positions.size()) return false;
+    // bool operator==(const Move& other) const{
+    //     if(positions.size() != other.positions.size()) return false;
 
-        for(int i = 0; i < positions.size(); ++i){
-            if(positions[i].x != other.positions[i].x || positions[i].y != other.positions[i].y){
-                return false;
-            }
-        }
+    //     for(int i = 0; i < positions.size(); ++i){
+    //         if(positions[i].x != other.positions[i].x || positions[i].y != other.positions[i].y){
+    //             return false;
+    //         }
+    //     }
 
-        return true;
-    }
+    //     return true;
+    // }
 
-    operator bool() const{
-        return !operator==(nullMove);
-    }
+    // operator bool() const{
+    //     return !operator==(nullMove);
+    // }
 
     const static Move nullMove;
 };

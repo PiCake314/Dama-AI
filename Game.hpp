@@ -69,6 +69,10 @@ struct Game{
         return numYellow > 0 && numBlack > 0;
     }
 
+    int getNumPieces(Piece::Color color){
+        return color == Piece::Color::Black ? numBlack : numYellow;
+    }
+
 
     void play(const Move& move){
         Piece p = board[move.positions[0].y][move.positions[0].x];
@@ -77,14 +81,13 @@ struct Game{
         for(const auto& p : move.eaten){
             if(p.color == Piece::Color::Black){
                 if(p.shaikh) --numShaikhBlack;
-                board[p.position.y][p.position.x] = Piece::nullPiece;
                 --numBlack;
             }
             else /*if(p.color == Piece::Color::Yellow)*/{
                 if(p.shaikh) --numShaikhYellow;
-                board[p.position.y][p.position.x] = Piece::nullPiece;
                 --numYellow;
             }
+            board[p.position.y][p.position.x] = Piece::nullPiece;
         }
 
         p.position = move.positions.back();
@@ -104,7 +107,7 @@ struct Game{
 
 
     std::vector<Position> canEatShaikh(const Piece& p1, const Piece& p2){
-        if((p2.position.x != p1.position.x && p2.position.y != p1.position.y) || p1.color == p2.color)
+        if((p2.position.x != p1.position.x && p2.position.y != p1.position.y) || p1.color == p2.color || p2.color == Piece::Color::None)
             return {};
 
         // check if this piece can jump over the other piece even if it is a long jump
@@ -171,7 +174,7 @@ struct Game{
         if((p2.position.x != p1.position.x && p2.position.y != p1.position.y) || p1.color == p2.color)
             return Position::nullPosition;
 
-        int result = p1.color == Piece::Color::Yellow ? 1 : -1;
+        const int result = p1.color == Piece::Color::Yellow ? 1 : -1;
 
         // check if the distance between the two pieces is more than one square
         if((p2.position.x == p1.position.x && p2.position.y - p1.position.y != result)
@@ -199,7 +202,6 @@ struct Game{
                 return Position{p2.position.x - 1, p2.position.y};
             }   
         }
-
 
 
         return Position::nullPosition;
@@ -407,14 +409,16 @@ struct Game{
         board[move.positions[0].y][move.positions[0].x] = Piece::nullPiece;
 
         for(const auto& p : move.eaten){
-            if(p.color == Piece::Color::Black){
-                board[p.position.y][p.position.x] = Piece::nullPiece;
-                --numBlack;
-            }
-            else /*if(p.color == Piece::Color::Yellow)*/{
-                board[p.position.y][p.position.x] = Piece::nullPiece;
-                --numYellow;
-            }
+            p.color == Piece::Color::Black ? --numBlack : --numYellow;
+            board[p.position.y][p.position.x] = Piece::nullPiece;
+            // if(p.color == Piece::Color::Black){
+            //     board[p.position.y][p.position.x] = Piece::nullPiece;
+            //     --numBlack;
+            // }
+            // else /*if(p.color == Piece::Color::Yellow)*/{
+            //     --numYellow;
+            //     board[p.position.y][p.position.x] = Piece::nullPiece;
+            // }
         }
 
         p.position = move.positions.back();
@@ -457,7 +461,7 @@ struct Game{
     }
 
 
-    int countMaterial(Piece::Color color, bool endgame = false){
+    int calculateScore(Piece::Color color, bool endgame = false){
         int total = 0;
 
         if(endgame){
@@ -469,10 +473,10 @@ struct Game{
                         for(const auto& row2 : board){
                             for(const auto& p2 : row2){
                                 if(p2.color == p.otherColor()){
-                                    // sum += std::abs(p.position.x - p2.position.x) + std::abs(p.position.y - p2.position.y);
+                                    sum += std::abs(p.position.x - p2.position.x) + std::abs(p.position.y - p2.position.y);
+                                    // sum += std::sqrt(std::pow(p.position.x - p2.position.x, 2) + std::pow(p.position.y - p2.position.y, 2));
                                     // sum += std::max(std::abs(p.position.x - p2.position.x), std::abs(p.position.y - p2.position.y));
                                     // calculating the distance using the pythagorean theorem
-                                    sum += std::sqrt(std::pow(p.position.x - p2.position.x, 2) + std::pow(p.position.y - p2.position.y, 2));
                                 }
                             }
                         }
@@ -510,44 +514,44 @@ struct Game{
         return total;
     }
 
-    int evaluate(){
+    double evaluate(){
         const bool endgame = numBlack == numShaikhBlack && numYellow == numShaikhYellow;
-        int blackMaterial = countMaterial(Piece::Color::Black, endgame);
-        int yellowMaterial = countMaterial(Piece::Color::Yellow, endgame);
+        int blackMaterial = calculateScore(Piece::Color::Black, endgame);
+        int yellowMaterial = calculateScore(Piece::Color::Yellow, endgame);
 
         const int prespective = turn == Piece::Color::Black ? 1 : -1;
         const int material = blackMaterial - yellowMaterial;
-        const int evaluation = material / (numBlack + numYellow);
+        const int evaluation = material / double(numBlack + numYellow);
 
         return evaluation * prespective;
     }
 
-    void orderMoves(std::vector<Move>& moves){
-        for(auto& m : moves){
-            int guess = 0;
-            for(const auto& e : m.eaten){
-                guess += (10 * e.value() - board[m.positions[0].y][m.positions[0].x].value());
-            }
+    // void orderMoves(std::vector<Move>& moves){
+    //     for(auto& m : moves){
+    //         int guess = 0;
+    //         for(const auto& e : m.eaten){
+    //             guess += (10 * e.value() - board[m.positions[0].y][m.positions[0].x].value());
+    //         }
 
-            // if(m.promotion && !board[m.positions[0].y][m.positions[0].x].shaikh) guess += 100;
+    //         // if(m.promotion && !board[m.positions[0].y][m.positions[0].x].shaikh) guess += 100;
 
-            m.guess = guess;
-        }
+    //         m.guess = guess;
+    //     }
 
-        std::ranges::sort(moves, [](const Move& m1, const Move& m2){
-            // return m1.eaten.size() > m2.eaten.size();
-            return m1.guess > m2.guess;
-        });
-    }
+    //     std::ranges::sort(moves, [](const Move& m1, const Move& m2){
+    //         // return m1.eaten.size() > m2.eaten.size();
+    //         return m1.guess > m2.guess;
+    //     });
+    // }
 
-    int alphaBeta(int depth = 10, int alpha = -INF, int beta = INF){
+    double alphaBeta(int depth = 10, int alpha = -INF, int beta = INF){
 
         if(depth == 10 && cache.contains(zobristHash.hash(board))){
             auto c = cache.get(zobristHash.hash(board));
             return c.turn == turn ? c.score : -c.score;
         }
 
-        if(depth == 0) return evaluate();
+        if(depth <= 0) return evaluate();
 
         auto moves = generateMoves();
         // orderMoves(moves);

@@ -26,7 +26,7 @@ public:
     FixedSizeCache(size_t maxSize) : maxSize{maxSize} {}
 
     void insert(uint64_t key, int value, Piece::Color turn){
-        if(table.size() == maxSize){
+        if(table.size() >= maxSize){
             table.erase(keys.front());
             keys.erase(keys.begin());
         }
